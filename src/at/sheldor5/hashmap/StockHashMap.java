@@ -7,7 +7,7 @@ import at.sheldor5.stock.Stock;
  */
 public class StockHashMap {
 
-    private final static int MAX_SIZE = 1009;
+    private final static int MAX_SIZE = 1399;
     //private final static int MAX_SIZE = 2003;
     private final static Stock deletedStock = new Stock(null, null, null, null);
 
