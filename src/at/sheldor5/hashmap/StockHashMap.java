@@ -5,14 +5,7 @@ import at.sheldor5.stock.Stock;
 /**
  * Created by Michael Palata [github.com/Sheldor5] on 09.03.2016
  */
-public class StockHashMap {
-
-    private final static int MAX_SIZE = 1399;
-    //private final static int MAX_SIZE = 2003;
-    private final static Stock deletedStock = new Stock(null, null, null, null);
-
-    public boolean verbose;
-    private double used = 0;
+public class StockHashMap extends HashMap {
 
     private final Stock[] stocksByName = new Stock[MAX_SIZE];
     private final Stock[] stocksByWkn = new Stock[MAX_SIZE];
@@ -26,15 +19,18 @@ public class StockHashMap {
     }
 
     public void put(final Stock paramStock) {
+        int hash;
+        int index;
+
         // store by name
-        int nameHash = paramStock.name.hashCode() % MAX_SIZE;
-        int x = getNextFreeIndex(stocksByName, nameHash);
-        stocksByName[x] = paramStock;
+        hash = hash(paramStock.name);
+        index = getNextFreeIndex(stocksByName, hash);
+        stocksByName[index] = paramStock;
 
         // store by wkn
-        int wknHash = paramStock.wkn.hashCode() % MAX_SIZE;
-        int y = getNextFreeIndex(stocksByWkn, wknHash);
-        stocksByWkn[y] = paramStock;
+        hash = hash(paramStock.wkn);
+        index = getNextFreeIndex(stocksByWkn, hash);
+        stocksByWkn[index] = paramStock;
 
         used++;
     }
@@ -52,16 +48,6 @@ public class StockHashMap {
             System.out.println("Found free index for hash " + paramHash + " after " + c + " collisions");
         }
         return i;
-    }
-
-    /**
-     * Use square exploratory to get the next index.
-     * @param hash The hash of the key.
-     * @param cc The collision count of how many times this hash has collided while searching for the next free index.
-     * @return The next free index for this
-     */
-    private int getNextIndex(int hash, int cc) {
-        return (hash + cc*cc) % MAX_SIZE;
     }
 
     public void remove(final String paramKey) {
@@ -86,15 +72,18 @@ public class StockHashMap {
                 System.out.println("Stock " + stocksByName[iName].toString() + " will be deleted");
                 System.out.println("Stock " + stocksByWkn[iWKn].toString() + " will be deleted");
             }
-            stocksByName[iName] = deletedStock;
-            stocksByWkn[iWKn] = deletedStock;
-            used--;
+            if (stocksByName[iName] != null && stocksByName[iName].equals(stocksByWkn[iWKn])) {
+                stocksByName[iName] = deletedStock;
+                stocksByWkn[iWKn] = deletedStock;
+                used--;
+            } else {
+                System.out.println("PROBLEM?");
+            }
         }
     }
 
     public Stock get(final String paramKey) {
         Stock result = null;
-
         int i = getIndexOfKey(stocksByName, paramKey);
         if (i < 0) {
             i = getIndexOfKey(stocksByWkn, paramKey);
@@ -104,7 +93,6 @@ public class StockHashMap {
         } else {
             result = stocksByName[i];
         }
-
         return result;
     }
 
@@ -116,12 +104,7 @@ public class StockHashMap {
         }
 
         // get initial hash
-        int hash = paramKey.hashCode() % MAX_SIZE;
-
-        // handle invalid hashes
-        if (hash < 0) {
-            hash *= -1;
-        }
+        int hash = hash(paramKey);
 
         // setting up helper variables for new search
         boolean n = stocksByName.equals(paramArray) ? true : false;
@@ -159,13 +142,5 @@ public class StockHashMap {
         }
 
         return result;
-    }
-
-    public double getLoadFactor() {
-        return used / MAX_SIZE;
-    }
-
-    public int getStockCount() {
-        return (int) used;
     }
 }

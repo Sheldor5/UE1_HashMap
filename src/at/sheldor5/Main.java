@@ -1,6 +1,9 @@
 package at.sheldor5;
 
+import at.sheldor5.hashmap.HashMap;
+import at.sheldor5.hashmap.HashMapInt;
 import at.sheldor5.hashmap.StockHashMap;
+import at.sheldor5.hashmap.StockHashMap2;
 import at.sheldor5.stock.Stock;
 
 import java.io.BufferedReader;
@@ -8,10 +11,46 @@ import java.io.InputStreamReader;
 
 public class Main {
 
-    private static final StockHashMap map = new StockHashMap(true);
+    private static final HashMap map = new StockHashMap(true);
+    private static final HashMap map2 = new StockHashMap2(true);
     private static Stock x;
 
+    public static void init() {
+        //Stock s = new Stock("Microsoft Corporation", "870747", "MSFT", "E:/table.csv");
+        //map.put(s);
+        for (int i = 0; i < (HashMap.MAX_SIZE/2); i++) {
+            //map.put(new Stock(String.format("Name%s", i), String.format("Code%s", i), String.format("WKN%s", i), "C:/"));
+            map2.put(new Stock(String.format("Name%s", i), String.format("Code%s", i), String.format("WKN%s", i), "C:/"));
+        }
+    }
+
     public static void main(String[] args) {
+        init();
+        get(map2, "WKN1");
+        get(map2, "Name1");
+        remove(map2, "WKN2");
+        remove(map2, "WKN2");
+        remove(map2, "Name3");
+    }
+
+    private static void remove(final HashMap paramHashMap, final String paramKey) {
+        System.out.println(paramHashMap.getStockCount());
+        paramHashMap.remove(paramKey);
+        System.out.println(paramHashMap.getStockCount());
+        //x = paramHashMap.get(paramKey);
+        if (x != null) {
+            //System.out.println("Failed to remove " + x.toString() + ": " + x.name + " - " + x.wkn);
+        }
+    }
+
+    private static void get(final HashMap paramHashMap, final String paramKey) {
+        x = paramHashMap.get(paramKey);
+        if (x != null) {
+            System.out.println(x.toString() + ": " + x.name + " - " + x.wkn);
+        }
+    }
+
+    public static void in() {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String str = "";
@@ -49,42 +88,6 @@ public class Main {
 
         } catch (final Exception e) {
 
-        }
-
-        if (running) {
-            return;
-        }
-
-        Stock s = new Stock("Microsoft Corporation", "870747", "MSFT", "E:/table.csv");
-        map.put(s);
-        for (int i = 0; i < 1000; i++) {
-            map.put(new Stock(String.format("Name%s", i), String.format("Code%s", i), String.format("WKN%s", i), "C:/"));
-        }
-        get("Name500");
-        get("asdf");
-        get("WKN300");
-        get("1234");
-
-        remove("Name500");
-        remove("asdf");
-        remove("WKN300");
-        remove("1234");
-    }
-
-    private static void remove(final String paramKey) {
-        System.out.println(map.getStockCount());
-        map.remove(paramKey);
-        System.out.println(map.getStockCount());
-        x = map.get(paramKey);
-        if (x != null) {
-            System.out.println(x.wkn);
-        }
-    }
-
-    private static void get(final String paramKey) {
-        x = map.get(paramKey);
-        if (x != null) {
-            System.out.println(x.name);
         }
     }
 }
