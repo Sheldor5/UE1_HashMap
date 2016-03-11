@@ -16,16 +16,14 @@ public class StockHistory {
     private final File file;
     private final List<HistoryEntry> historyEntries = new ArrayList<>();
 
-    public StockHistory(final String paramPathToHistoryFile) throws IOException {
-        File f = new File(paramPathToHistoryFile);
-        if (f.exists()) {
-            file = f;
-        } else {
-            throw new IOException(String.format("File \"%s\" does not exist", paramPathToHistoryFile));
-        }
+    public StockHistory(final String paramPathToHistoryFile) {
+        file = new File(paramPathToHistoryFile);
     }
 
-    public List<HistoryEntry> getHistoryEntries() {
+    public List<HistoryEntry> getHistoryEntries() throws IOException {
+        if (file == null) {
+
+        }
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             br.readLine(); // skip first line
             int i = 0;

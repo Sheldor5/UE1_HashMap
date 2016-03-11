@@ -1,6 +1,6 @@
 package at.sheldor5;
 
-import at.sheldor5.hashmap.MyHashMap;
+import at.sheldor5.hashmap.StockHashMap;
 import at.sheldor5.stock.Stock;
 
 import java.io.BufferedReader;
@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 
 public class Main {
 
-    private static final MyHashMap map = new MyHashMap(true);
+    private static final StockHashMap map = new StockHashMap(true);
 
     public static void main(String[] args) {
 
@@ -49,9 +49,11 @@ public class Main {
         } catch (final Exception e) {
 
         }
+
         if (running) {
             return;
         }
+
         Stock s = new Stock("Microsoft Corporation", "870747", "MSFT", "E:/table.csv");
         map.put(s);
         for (int i = 0; i < 1000; i++) {

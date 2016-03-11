@@ -5,7 +5,7 @@ import at.sheldor5.stock.Stock;
 /**
  * Created by Michael Palata [github.com/Sheldor5] on 09.03.2016
  */
-public class MyHashMap {
+public class OldStockHashMap {
 
     private final static int MAX_SIZE = 1009;
     //private final static int MAX_SIZE = 2003;
@@ -17,11 +17,11 @@ public class MyHashMap {
     private final Stock[] stocksByName = new Stock[MAX_SIZE];
     private final Stock[] stocksByWkn = new Stock[MAX_SIZE];
 
-    public MyHashMap(final boolean paramDebug) {
+    public OldStockHashMap(final boolean paramDebug) {
         debug = paramDebug;
     }
 
-    public MyHashMap() {
+    public OldStockHashMap() {
         this(false);
     }
 
