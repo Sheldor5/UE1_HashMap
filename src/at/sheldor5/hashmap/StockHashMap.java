@@ -12,7 +12,7 @@ public class StockHashMap {
     private final static Stock deletedStock = new Stock(null, null, null, null);
 
     public boolean verbose;
-    private int used = 0;
+    private double used = 0;
 
     private final Stock[] stocksByName = new Stock[MAX_SIZE];
     private final Stock[] stocksByWkn = new Stock[MAX_SIZE];
@@ -66,21 +66,29 @@ public class StockHashMap {
 
     public void remove(final String paramKey) {
         int iName = getIndexOfKey(stocksByName, paramKey);
-
+        int iWKn;
         if (iName < 0) {
+            iWKn = getIndexOfKey(stocksByWkn, paramKey);
+            if (iWKn >= 0) {
+                iName = getIndexOfKey(stocksByName, stocksByWkn[iWKn].name);
+            }
+        } else {
+            iWKn = getIndexOfKey(stocksByWkn, stocksByName[iName].wkn);
+        }
+
+        if (iName < 0 && iWKn < 0) {
+            System.out.println("Key \"" + paramKey + "\" not found");
+        } else if (iName < 0 || iWKn < 0) {
             System.out.println("FATAL ERROR");
         } else {
-            int iWKn = getIndexOfKey(stocksByWkn, paramKey);
-            if (iWKn < 0) {
-                System.out.println("FATAL ERROR");
-            } else {
-                if (verbose) {
-                    System.out.println("Stock " + stocksByName[iName].toString() + " will be deleted");
-                    System.out.println("Stock " + stocksByWkn[iWKn].toString() + " will be deleted");
-                }
-                stocksByName[iName] = deletedStock;
-                stocksByWkn[iWKn] = deletedStock;
+            // delete
+            if (verbose) {
+                System.out.println("Stock " + stocksByName[iName].toString() + " will be deleted");
+                System.out.println("Stock " + stocksByWkn[iWKn].toString() + " will be deleted");
             }
+            stocksByName[iName] = deletedStock;
+            stocksByWkn[iWKn] = deletedStock;
+            used--;
         }
     }
 
@@ -146,6 +154,18 @@ public class StockHashMap {
             i = getNextIndex(hash, ++c);
         }
 
+        if (verbose && result < 0) {
+            System.out.println("No stock for \"" + paramKey + "\" found, took " + c + " collisions to realize");
+        }
+
         return result;
+    }
+
+    public double getLoadFactor() {
+        return used / MAX_SIZE;
+    }
+
+    public int getStockCount() {
+        return (int) used;
     }
 }

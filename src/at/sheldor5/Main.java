@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 public class Main {
 
     private static final StockHashMap map = new StockHashMap(true);
+    private static Stock x;
 
     public static void main(String[] args) {
 
@@ -59,22 +60,31 @@ public class Main {
         for (int i = 0; i < 1000; i++) {
             map.put(new Stock(String.format("Name%s", i), String.format("Code%s", i), String.format("WKN%s", i), "C:/"));
         }
-        Stock x = map.get("Name500");
-        if (x != null) {
-            System.out.println(x.name);
-        }
-        x = map.get("sdf");
-        if (x != null) {
-            System.out.println(x.name);
-        }
-        x = map.get("WKN300");
-        if (x != null) {
-            System.out.println(x.wkn);
-        }
-        x = map.get("fff");
-        if (x != null) {
-            System.out.println(x.wkn);
-        }
+        get("Name500");
+        get("asdf");
+        get("WKN300");
+        get("1234");
 
+        remove("Name500");
+        remove("asdf");
+        remove("WKN300");
+        remove("1234");
+    }
+
+    private static void remove(final String paramKey) {
+        System.out.println(map.getStockCount());
+        map.remove(paramKey);
+        System.out.println(map.getStockCount());
+        x = map.get(paramKey);
+        if (x != null) {
+            System.out.println(x.wkn);
+        }
+    }
+
+    private static void get(final String paramKey) {
+        x = map.get(paramKey);
+        if (x != null) {
+            System.out.println(x.name);
+        }
     }
 }
