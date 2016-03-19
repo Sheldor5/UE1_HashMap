@@ -1,7 +1,5 @@
 package at.sheldor5.hashmap;
 
-import at.sheldor5.stock.Stock;
-
 import java.io.Serializable;
 
 /**
@@ -9,33 +7,78 @@ import java.io.Serializable;
  */
 public abstract class HashMap implements HashMapInt, Serializable {
 
-    protected static final int MAX_SIZE = 1499;
-    protected final static Stock deletedStock = new Stock(null, null, null, null);
+    protected static final int DEFAULT_SIZE = 1499;
+    protected final static Object DELETED_OBJECT = new Object();
 
-    private final int maxSize;
+    private final int m;
     public boolean verbose;
     protected double used = 0;
 
+    /**
+     * Default Constructor to set up an HashMap with {@value DEFAULT_SIZE} buckets.
+     */
     public HashMap() {
-        this(MAX_SIZE);
-    }
-
-    public HashMap(int paramSize) {
-        maxSize = paramSize;
-    }
-
-    public int getMaxSize() {
-        return maxSize;
+        this(DEFAULT_SIZE);
     }
 
     /**
-     * Use square exploratory to get the next index.
-     * @param hash The hash of the key.
-     * @param cc The collision count of how many times this hash has collided while searching for the next free index.
-     * @return The next free index for this
+     * Constructor to set up an HashMap with a specific number of buckets.
+     * @param paramSize The number of buckets this HashMap uses, should be prime number.
      */
-    protected int getNextIndex(int hash, int cc) {
-        hash = (hash + (cc*cc)) % maxSize;
+    public HashMap(int paramSize) {
+        m = paramSize;
+    }
+
+    /**
+     * Getter for unmodifiable size of this HashMap.
+     * @return The size of this HashMap.
+     */
+    public int getMaxSize() {
+        return m;
+    }
+
+    /**
+     * Use simple square exploration to get the next index.
+     * @param h The hash of the key.
+     * @param i The collision count of how many times this hash has already collided.
+     * @return The next calculated index.
+     */
+    @Deprecated
+    protected int getNextIndex__(int h, int i) {
+        h = (h + (i*i)) % m;
+        if (h < 0) {
+            h += m;
+        }
+        return h;
+    }
+
+    /**
+     * Use advanced square exploration to get the next index by
+     * <a href="https://de.wikipedia.org/wiki/Hashtabelle#Quadratisches_Sondieren">Quadratische Sondierung</a>.
+     * @param h The hash of the key.
+     * @param i The collision count of how many times this hash has already collided.
+     * @return The next calculated index.
+     */
+    protected int getNextIndex(int h, int i) {
+        int a = (int)Math.pow(-1, i+1);
+        int b = (int)Math.pow(i/2, 2);
+        h = (h + (a * b)) % m;
+        if (h < 0) {
+            h += m;
+        }
+        return h;
+    }
+
+    /**
+     * Hash key.
+     * @param paramKey The key to hash.
+     * @return The hash of the key as positive integer.
+     */
+    protected int hash(final String paramKey) {
+        if (paramKey == null) {
+            return 0;
+        }
+        int hash = paramKey.hashCode() % m;
         if (hash < 0) {
             hash *= -1;
         }
@@ -43,33 +86,17 @@ public abstract class HashMap implements HashMapInt, Serializable {
     }
 
     /**
-     * https://de.wikipedia.org/wiki/Hashtabelle#Quadratisches_Sondieren
-     * @param hash
-     * @param cc
+     * TODO
      * @return
      */
-    protected int getIndex(int hash, int cc) {
-        int dir = (int)Math.pow(-1, cc+1);
-        int sqr = (int)Math.pow(cc/2, 2);
-        hash = (hash + (dir * sqr)) % maxSize;
-        if (hash < 0) {
-            hash += maxSize;
-        }
-        return hash;
-    }
-
-    protected int hash(final String paramString) {
-        int hash = paramString.hashCode() % MAX_SIZE;
-        if (hash < 0) {
-            hash *= -1;
-        }
-        return hash;
-    }
-
     public double getLoadFactor() {
-        return used / MAX_SIZE;
+        return used / DEFAULT_SIZE;
     }
 
+    /**
+     * TODO
+     * @return
+     */
     public int getStockCount() {
         return (int) used;
     }

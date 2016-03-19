@@ -7,7 +7,7 @@ import at.sheldor5.stock.Stock;
  */
 public class StockHashMap2 extends HashMap {
 
-    private final Slot[] slot = new Slot[MAX_SIZE];
+    private final Slot[] slot = new Slot[DEFAULT_SIZE];
 
     public StockHashMap2(final boolean paramVerboseOutput) {
         verbose = paramVerboseOutput;
@@ -87,14 +87,14 @@ public class StockHashMap2 extends HashMap {
             if ((stock = slot[i].getByKey(paramKey)) != null) {
                 if (byName && stock.equals(slot[i].byName)) {
                     paramKey = slot[i].byName.wkn;
-                    slot[i].byName = deletedStock;
+                    slot[i].byName = DELETED_OBJECT;
                     i = hash = hash(paramKey);
                     x = 0;
                     b = false;
                     byName = false;
                 } else if (byWkn && stock.equals(slot[i].byWkn)) {
                     paramKey = slot[i].byWkn.name;
-                    slot[i].byWkn = deletedStock;
+                    slot[i].byWkn = DELETED_OBJECT;
                     i = hash = hash(paramKey);
                     x = 0;
                     b = false;
@@ -135,9 +135,9 @@ public class StockHashMap2 extends HashMap {
         Stock st;
 
         while ((byName || byWkn) && (sl = slot[i]) != null) {
-            if (byName && ((st = sl.byName) == null || sl.byName.name == null || sl.byName.equals(deletedStock))) {
+            if (byName && ((st = sl.byName) == null || sl.byName.name == null || sl.byName.equals(DELETED_OBJECT))) {
                 byName = false;
-            } else if (byWkn && ((st = sl.byWkn) == null || sl.byWkn.name == null || sl.byWkn.equals(deletedStock))) {
+            } else if (byWkn && ((st = sl.byWkn) == null || sl.byWkn.name == null || sl.byWkn.equals(DELETED_OBJECT))) {
                 byWkn = false;
             }
             if (byName &&  sl.byName.equals(sl.byName)) {
@@ -162,7 +162,7 @@ public class StockHashMap2 extends HashMap {
     }
 
     public double getLoadFactor() {
-        return used / MAX_SIZE;
+        return used / DEFAULT_SIZE;
     }
 
     public int getStockCount() {

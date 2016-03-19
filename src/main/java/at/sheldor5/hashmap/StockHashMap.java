@@ -24,8 +24,8 @@ public class StockHashMap extends HashMap {
     }
 
     public StockHashMap(final boolean paramVerboseOutput) {
-        stocksByName = new Stock[MAX_SIZE];
-        stocksByWkn = new Stock[MAX_SIZE];
+        stocksByName = new Stock[DEFAULT_SIZE];
+        stocksByWkn = new Stock[DEFAULT_SIZE];
         verbose = paramVerboseOutput;
     }
 
@@ -88,8 +88,8 @@ public class StockHashMap extends HashMap {
                 System.out.println("Stock " + stocksByWkn[iWKn].toString() + " will be deleted");
             }
             if (stocksByName[iName] != null && stocksByName[iName].equals(stocksByWkn[iWKn])) {
-                stocksByName[iName] = deletedStock;
-                stocksByWkn[iWKn] = deletedStock;
+                stocksByName[iName] = DELETED_OBJECT;
+                stocksByWkn[iWKn] = DELETED_OBJECT;
                 used--;
             } else {
                 System.out.println("PROBLEM?");
