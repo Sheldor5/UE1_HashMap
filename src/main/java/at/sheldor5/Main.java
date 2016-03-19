@@ -18,7 +18,7 @@ public class Main {
     public static void init() {
         //Stock s = new Stock("Microsoft Corporation", "870747", "MSFT", "E:/table.csv");
         //map.put(s);
-        for (int i = 0; i < (HashMap.MAX_SIZE/2); i++) {
+        for (int i = 0; i < (map2.getMaxSize()/2); i++) {
             //map.put(new Stock(String.format("Name%s", i), String.format("Code%s", i), String.format("WKN%s", i), "C:/"));
             map2.put(new Stock(String.format("Name%s", i), String.format("Code%s", i), String.format("WKN%s", i), "C:/"));
         }

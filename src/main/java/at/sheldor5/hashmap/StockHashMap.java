@@ -7,10 +7,25 @@ import at.sheldor5.stock.Stock;
  */
 public class StockHashMap extends HashMap {
 
-    private final Stock[] stocksByName = new Stock[MAX_SIZE];
-    private final Stock[] stocksByWkn = new Stock[MAX_SIZE];
+    private final Stock[] stocksByName;
+    private final Stock[] stocksByWkn;
+
+    public StockHashMap(int paramSize) {
+        super(paramSize);
+        stocksByName = new Stock[paramSize];
+        stocksByWkn = new Stock[paramSize];
+    }
+
+    public StockHashMap(final boolean paramVerboseOutput, int paramSize) {
+        super(paramSize);
+        stocksByName = new Stock[paramSize];
+        stocksByWkn = new Stock[paramSize];
+        verbose = paramVerboseOutput;
+    }
 
     public StockHashMap(final boolean paramVerboseOutput) {
+        stocksByName = new Stock[MAX_SIZE];
+        stocksByWkn = new Stock[MAX_SIZE];
         verbose = paramVerboseOutput;
     }
 
