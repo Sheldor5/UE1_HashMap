@@ -2,35 +2,43 @@ package at.sheldor5.hashmap;
 
 import at.sheldor5.stock.Stock;
 
+import java.io.Serializable;
+
 /**
  * Created by Michael Palata [github.com/Sheldor5] on 09.03.2016
  */
-public class StockHashMap extends HashMap {
+public class StockHashMap implements Serializable {
 
     private final Stock[] stocksByName;
     private final Stock[] stocksByWkn;
 
+    protected static final int DEFAULT_SIZE = 1499;
+    protected final static Stock DELETED_OBJECT = new Stock("", "", "", null);
+
+    private final int m;
+    public boolean verbose = false;
+    protected double used = 0;
+
+
+
     public StockHashMap(int paramSize) {
-        super(paramSize);
+        m = paramSize;
         stocksByName = new Stock[paramSize];
         stocksByWkn = new Stock[paramSize];
     }
 
     public StockHashMap(final boolean paramVerboseOutput, int paramSize) {
-        super(paramSize);
-        stocksByName = new Stock[paramSize];
-        stocksByWkn = new Stock[paramSize];
+        this(paramSize);
         verbose = paramVerboseOutput;
     }
 
     public StockHashMap(final boolean paramVerboseOutput) {
-        stocksByName = new Stock[DEFAULT_SIZE];
-        stocksByWkn = new Stock[DEFAULT_SIZE];
+        this(DEFAULT_SIZE);
         verbose = paramVerboseOutput;
     }
 
     public StockHashMap() {
-        this(false);
+        this(DEFAULT_SIZE);
     }
 
     public void put(final Stock paramStock) {
@@ -97,6 +105,10 @@ public class StockHashMap extends HashMap {
         }
     }
 
+    public boolean contains(String paramKey) {
+        return false;
+    }
+
     public Stock get(final String paramKey) {
         Stock result = null;
         int i = getIndexOfKey(stocksByName, paramKey);
@@ -157,5 +169,77 @@ public class StockHashMap extends HashMap {
         }
 
         return result;
+    }
+
+    /**
+     * Getter for unmodifiable size of this HashMap.
+     * @return The size of this HashMap.
+     */
+    public int getMaxSize() {
+        return m;
+    }
+
+    /**
+     * Use simple square exploration to get the next index.
+     * @param h The hash of the key.
+     * @param i The collision count of how many times this hash has already collided.
+     * @return The next calculated index.
+     */
+    @Deprecated
+    protected int getNextIndex__(int h, int i) {
+        h = (h + (i*i)) % m;
+        if (h < 0) {
+            h += m;
+        }
+        return h;
+    }
+
+    /**
+     * Use advanced square exploration to get the next index by
+     * <a href="https://de.wikipedia.org/wiki/Hashtabelle#Quadratisches_Sondieren">Quadratische Sondierung</a>.
+     * @param h The hash of the key.
+     * @param i The collision count of how many times this hash has already collided.
+     * @return The next calculated index.
+     */
+    protected int getNextIndex(int h, int i) {
+        int a = (int)Math.pow(-1, i+1);
+        int b = (int)Math.pow(i/2, 2);
+        h = (h + (a * b)) % m;
+        if (h < 0) {
+            h += m;
+        }
+        return h;
+    }
+
+    /**
+     * Hash key.
+     * @param paramKey The key to hash.
+     * @return The hash of the key as positive integer.
+     */
+    protected int hash(final String paramKey) {
+        if (paramKey == null) {
+            return 0;
+        }
+        int hash = paramKey.hashCode() % m;
+        if (hash < 0) {
+            hash *= -1;
+        }
+        return hash;
+    }
+
+    /**
+     * TODO
+     * @return
+     */
+    public double getLoadFactor() {
+        return used / DEFAULT_SIZE;
+    }
+
+    /**
+     * TODO
+     * @return
+     */
+    public int getStockCount() {
+        return (int) used;
     }
 }

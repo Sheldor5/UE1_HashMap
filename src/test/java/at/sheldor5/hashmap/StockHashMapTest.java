@@ -12,7 +12,7 @@ public class StockHashMapTest {
 
     private static final int hashMapBuckets = 1499;
 
-    private static HashMap map = new StockHashMap(hashMapBuckets);
+    private static StockHashMap map = new StockHashMap(hashMapBuckets);
     private static final Stock testStock = new Stock("Stock #1", "0001", "STK1", null);
     private static Stock tmpStock;
     private static final int[] tmp = new int[hashMapBuckets];
@@ -34,13 +34,13 @@ public class StockHashMapTest {
 
     @Test
     public void testPutGetRemove() {
-        System.out.println("# TESTING STANDARD OPERATIONS");
+        System.out.println("# TESTING STANDARD OPERATIONS\n");
 
         // PUT
         map.put(testStock);
 
         // GET BY NAME
-        tmpStock = (Stock) map.get(testStock.name);
+        tmpStock = map.get(testStock.name);
         Assert.assertEquals(testStock, tmpStock);
 
         // GET BY WKN
@@ -51,37 +51,37 @@ public class StockHashMapTest {
         map.remove(testStock.name);
         tmpStock = map.get(testStock.name);
         Assert.assertNull(tmpStock);
-
-        System.out.println("> Test successful\n");
     }
 
     @Test
     public void testPerformance() {
-        System.out.println("# TESTING PERFORMANCE BY PUTTING 1000 STOCKS IN THE HASHMAP\n");
-        final HashMap hashMap = new StockHashMap(true, hashMapBuckets);
+        System.out.println("# TESTING PERFORMANCE BY PUTTING 1000 STOCKS IN THE HASHMAP");
+        final StockHashMap hashMap = new StockHashMap(hashMapBuckets);
+        long start = System.nanoTime();
         for (int i = 0; i < 1000; i++) {
             hashMap.put(new Stock("Stock" + i, "" + i, "S"+i, null));
         }
-        System.out.println("\n> Test successful\n");
+        long end = System.nanoTime();
+        System.out.println("> Insertion took " + ((end - start) / 1000) + " microseconds\n");
     }
 
     @Test
     public void testSquareExploratory() {
-        System.out.println("# TESTING SQUARE EXPLORATION (h=hash(key), i=collision count, m=buckets)\n");
+        System.out.println("# TESTING SQUARE EXPLORATION (h=hash(key), i=collision count, m=buckets)");
 
         reset();
         for (int i = 0; i < hashMapBuckets; i++) {
             tmp[map.getNextIndex__(1, i)]++;
         }
         check();
-        print("simple square exploration (h+(i*i)%m)");
+        System.out.println("> Simple square exploration:\t" + unused + " buckets were not hit, defined by (h+(i*i)%m)");
 
         reset();
         for (int i = 0; i < hashMapBuckets; i++) {
             tmp[map.getNextIndex(1, i)]++;
         }
         check();
-        print("advanced square exploration (h+((-1)^(i+1))*((i/2)^2)%m)");
+        System.out.println("> Advanced square exploration:\t" + unused + " buckets were not hit, defined by (h+((-1)^(i+1))*((i/2)^2)%m)\n");
     }
 
     private void reset() {
@@ -97,9 +97,5 @@ public class StockHashMapTest {
                 unused++;
             }
         }
-    }
-
-    private void print(final String paramString) {
-        System.out.println("> " + unused + " buckets were not hit by " + paramString + "\n");
     }
 }
