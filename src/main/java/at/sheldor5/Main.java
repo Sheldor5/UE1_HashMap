@@ -10,7 +10,7 @@ import java.io.StringReader;
 
 public class Main {
 
-    private static StockHashMap map = new StockHashMap(true);
+    private static StockHashMap map = new StockHashMap();
 
     private static Stock stock;
 
@@ -22,15 +22,18 @@ public class Main {
             System.out.print("#>");
             while (running && (str = br.readLine()) != null) {
                 String[] s = str.split(" ");
+                for (String a : s) {
+                    System.out.println("\"" + a + "\"");
+                }
                 if (s.length < 1) {
                     invalid();
                 } else {
                     switch (s[0]) {
                         case "ADD":
-                            if (s.length == 3) {
+                            if (s.length == 4) {
                                 stock = new Stock(s[1], s[2], s[3], null);
                                 map.put(stock);
-                            } else if (s.length == 4) {
+                            } else if (s.length == 5) {
                                 stock = new Stock(s[1], s[2], s[3], s[4]);
                                 map.put(stock);
                             } else {
@@ -75,6 +78,10 @@ public class Main {
                         case "QUIT":
                             running = false;
                             break;
+                        case "VERBOSE":
+                            map.verbose = !map.verbose;
+                            System.out.println("Toggled verbose output to: " + map.verbose);
+                            break;
                         case "HELP":
                             System.out.println(FileUtils.getHelp());
                             break;
@@ -88,8 +95,10 @@ public class Main {
 
             System.out.println(" Bye!");
 
+            System.out.println(running);
+            System.out.println(str);
         } catch (final Exception e) {
-
+            e.printStackTrace();
         }
     }
 
