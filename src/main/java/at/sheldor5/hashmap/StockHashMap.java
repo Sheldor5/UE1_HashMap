@@ -19,8 +19,6 @@ public class StockHashMap implements Serializable {
     public boolean verbose = false;
     protected double used = 0;
 
-
-
     public StockHashMap(int paramSize) {
         m = paramSize;
         stocksByName = new Stock[paramSize];

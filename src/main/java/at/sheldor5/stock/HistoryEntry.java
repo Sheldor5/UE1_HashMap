@@ -1,5 +1,6 @@
 package at.sheldor5.stock;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,7 +9,7 @@ import java.util.Locale;
 /**
  * Created by Michael Palata [github.com/Sheldor5] on 09.03.2016
  */
-public class HistoryEntry {
+public class HistoryEntry implements Serializable {
 
     private final static DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMAN);
 

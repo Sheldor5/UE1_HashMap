@@ -1,0 +1,40 @@
+﻿Usage:	<COMMAND> <PARAMS>
+
+COMMAND:	
+
+	ADD		Fuegt eine Aktie hinzu
+	
+		PARAMS:		<Name> <Nummer> <Kuerzel> [<Dateipfad>]
+
+
+	DEL		Loescht eine Aktie
+			
+		PARAMS:		(<Name> | <Kuerzel>)
+
+
+	IMPORT	Importiert Aktiendaten
+			
+		PARAMS:		<Dateipfad> [<Name> | <Kuerzel>]
+
+
+	SEARCH	Sucht eine Aktie
+			
+		PARAMS:		(<Name> | <Kuerzel>)
+
+
+	PLOT	Zeigt die Aktiendaten als ASCII Grafik an
+			
+		PARAMS:		[<Name> | <Kuerzel>]
+
+
+	SAVE	Speichert Programmdaten in eine Datei ab
+			
+		PARAMS:		<Dateipfad>
+
+
+	LOAD	Laedt Programmdaten aus einer Datei
+			
+		PARAMS:		<Dateipfad>
+	
+	
+	QUIT	Schliesst das Programm

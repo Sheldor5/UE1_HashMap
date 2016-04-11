@@ -2,82 +2,98 @@ package at.sheldor5;
 
 import at.sheldor5.hashmap.StockHashMap;
 import at.sheldor5.stock.Stock;
+import at.sheldor5.util.FileUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 
 public class Main {
 
-    private static final StockHashMap map = new StockHashMap(true);
-    private static Stock x;
+    private static StockHashMap map = new StockHashMap(true);
 
-    public static void init() {
-        //Stock s = new Stock("Microsoft Corporation", "870747", "MSFT", "E:/table.csv");
-        //map.put(s);
-        for (int i = 0; i < (map.getMaxSize()/2); i++) {
-            map.put(new Stock(String.format("Name%s", i), String.format("Code%s", i), String.format("WKN%s", i), "C:/"));
-        }
-    }
+    private static Stock stock;
 
-    public static void main(String[] args) {
-        init();
-    }
-
-    private static void remove(final StockHashMap paramHashMap, final String paramKey) {
-        System.out.println(paramHashMap.getStockCount());
-        paramHashMap.remove(paramKey);
-        System.out.println(paramHashMap.getStockCount());
-        //x = paramHashMap.get(paramKey);
-        if (x != null) {
-            //System.out.println("Failed to remove " + x.toString() + ": " + x.name + " - " + x.wkn);
-        }
-    }
-
-    private static void get(final StockHashMap paramHashMap, final String paramKey) {
-        x = paramHashMap.get(paramKey);
-        if (x != null) {
-            System.out.println(x.toString() + ": " + x.name + " - " + x.wkn);
-        }
-    }
-
-    public static void in() {
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public static void main(final String[] args) {
+        final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String str = "";
-        boolean running = false;
+        boolean running = true;
         try {
+            System.out.print("#>");
             while (running && (str = br.readLine()) != null) {
-                switch (str) {
-                    case "ADD":
-                        System.out.println("Adding new Stock ...");
-                        break;
-                    case "DEL":
-                        System.out.println("Deleting Stock ...");
-                        break;
-                    case "IMPORT":
-                        System.out.println("Importing Stocks ...");
-                        break;
-                    case "SEARCH":
-                        System.out.println("Searching for Stock ...");
-                        break;
-                    case "PLOT":
-                        System.out.println("Ploting Stock ...");
-                        break;
-                    case "SAVE":
-                        System.out.println("Saving Stocks ...");
-                        break;
-                    case "QUIT":
-                        System.out.println("Quitting ...");
-                        running = false;
-                        break;
-                    default:
-                        System.out.println("Invalid input, try again");
-                        break;
+                String[] s = str.split(" ");
+                if (s.length < 1) {
+                    invalid();
+                } else {
+                    switch (s[0]) {
+                        case "ADD":
+                            if (s.length == 3) {
+                                stock = new Stock(s[1], s[2], s[3], null);
+                                map.put(stock);
+                            } else if (s.length == 4) {
+                                stock = new Stock(s[1], s[2], s[3], s[4]);
+                                map.put(stock);
+                            } else {
+                                invalid();
+                            }
+                            break;
+                        case "DEL":
+                            if (s.length == 2) {
+                                map.remove(s[1]);
+                            } else {
+                                invalid();
+                            }
+                            System.out.println("Deleting Stock ...");
+                            break;
+                        case "IMPORT":
+
+                            break;
+                        case "SEARCH":
+                            if (s.length >= 2) {
+                                stock = map.get(s[1]);
+                            } else {
+                                invalid();
+                            }
+                            break;
+                        case "PLOT":
+                            System.out.println("Ploting Stock ...");
+                            break;
+                        case "SAVE":
+                            if (s.length == 2) {
+                                FileUtils.serialize(map, s[1]);
+                            } else {
+                                invalid();
+                            }
+                            break;
+                        case "LOAD":
+                            if (s.length == 2) {
+                                map = (StockHashMap) FileUtils.deserialize(s[1]);
+                            } else {
+                                invalid();
+                            }
+                            break;
+                        case "QUIT":
+                            running = false;
+                            break;
+                        case "HELP":
+                            System.out.println(FileUtils.getHelp());
+                            break;
+                        default:
+                            invalid();
+                            break;
+                    }
                 }
+                System.out.print("#>");
             }
+
+            System.out.println(" Bye!");
 
         } catch (final Exception e) {
 
         }
+    }
+
+    private static void invalid() {
+        System.out.println("Ungueltige Eingabe, versuchen Sie HELP");
     }
 }

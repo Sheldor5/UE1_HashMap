@@ -62,7 +62,7 @@ public class StockHashMapTest {
             hashMap.put(new Stock("Stock" + i, "" + i, "S"+i, null));
         }
         long end = System.nanoTime();
-        System.out.println("> Insertion took " + ((end - start) / 1000) + " microseconds\n");
+        System.out.println("> Insertion took " + (end - start) + " nanoseconds\n");
     }
 
     @Test

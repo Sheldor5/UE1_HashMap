@@ -1,16 +1,13 @@
 package at.sheldor5.stock;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Michael Palata [github.com/Sheldor5] on 09.03.2016
  */
-public class StockHistory {
+public class StockHistory implements Serializable {
     private static final int MAX_ENTRIES = 30;
 
     private final File file;
@@ -20,9 +17,11 @@ public class StockHistory {
         file = new File(paramPathToHistoryFile);
     }
 
-    public List<HistoryEntry> getHistoryEntries() throws IOException {
+    public final List<HistoryEntry> getHistoryEntries() {
         if (file == null) {
-
+            return null;
+        } else if (historyEntries.size() != 0) {
+            return historyEntries;
         }
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             br.readLine(); // skip first line
@@ -33,6 +32,7 @@ public class StockHistory {
             }
         } catch (final IOException e) {
             e.printStackTrace();
+            return null;
         }
         return historyEntries;
     }
