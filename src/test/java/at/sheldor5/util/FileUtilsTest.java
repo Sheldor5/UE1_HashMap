@@ -46,11 +46,6 @@ public class FileUtilsTest {
         Assert.assertEquals("Microsoft Corporation", stock.name);
     }
 
-    @Test
-    public void testHelp() {
-        //System.out.println(FileUtils.getHelp());
-    }
-
     @AfterClass
     public static void cleanup() {
         try {
@@ -58,5 +53,10 @@ public class FileUtilsTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @AfterClass
+    public static void closeTest() {
+        System.out.println("\n");
     }
 }

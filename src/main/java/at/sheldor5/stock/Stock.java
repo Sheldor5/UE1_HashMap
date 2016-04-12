@@ -1,6 +1,5 @@
 package at.sheldor5.stock;
 
-import java.io.File;
 import java.io.Serializable;
 
 /**
@@ -20,6 +19,19 @@ public class Stock implements Serializable {
         name = paramName;
         code = paramCode;
         wkn = paramWkn;
+    }
+
+
+    @Override
+    public boolean equals(final Object paramObject) {
+        if (paramObject == null || !(paramObject instanceof Stock)) {
+            return false;
+        }
+        final Stock stock = (Stock) paramObject;
+        if (name.equals(stock.name) && code.equals(stock.code) && wkn.equals(stock.wkn)) {
+            return true;
+        }
+        return false;
     }
 
     public StockHistory getHistory() {

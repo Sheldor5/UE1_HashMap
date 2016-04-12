@@ -27,7 +27,7 @@ public class FileUtils {
             out.writeObject(o);
             out.close();
             fileOut.close();
-            System.out.println("Gespeichert in: " + filePath);
+            System.out.println("Programmdaten gespeichert in: " + filePath);
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -46,6 +46,7 @@ public class FileUtils {
                 result = in.readObject();
                 in.close();
                 fileIn.close();
+                System.out.println("Programmdaten wiederhergestellt aus: " + filePath);
             }
         } catch(IOException e) {
             e.printStackTrace();

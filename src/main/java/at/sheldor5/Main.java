@@ -46,7 +46,6 @@ public class Main {
                             } else {
                                 invalid();
                             }
-                            System.out.println("Deleting Stock ...");
                             break;
                         case "IMPORT":
 

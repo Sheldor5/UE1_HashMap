@@ -21,9 +21,9 @@ public class StockHashMap implements Serializable {
     /**
      * Defaults
      */
-    protected static final int DEFAULT_SIZE = 1499;
-    protected static final Stock DELETED_OBJECT = new Stock("", "", "", null);
-    protected static final double MAX_LOAD = 0.9;
+    private static final int DEFAULT_SIZE = 1499;
+    private static final Stock DELETED_OBJECT = new Stock("", "", "", null);
+    private static final double MAX_LOAD = 0.9;
 
     /**
      *
@@ -31,7 +31,7 @@ public class StockHashMap implements Serializable {
     private final int size;
     public boolean verbose = false;
     private double load = 0.0;
-    protected int used = 0;
+    private int used = 0;
 
     /**
      * Constructor to specify internal array size.
@@ -83,13 +83,57 @@ public class StockHashMap implements Serializable {
 
         // store by name
         hash = hash(paramStock.name);
-        index = getNextFreeIndex(stocksByName, hash);
+        index = getNextFreeIndex(stocksByName, hash, paramStock);
         stocksByName[index] = paramStock;
+        System.out.print(hash + " - ");
 
         // store by wkn
         hash = hash(paramStock.wkn);
-        index = getNextFreeIndex(stocksByWkn, hash);
+        index = getNextFreeIndex(stocksByWkn, hash, paramStock);
         stocksByWkn[index] = paramStock;
+        System.out.println(hash);
+
+        // internal data
+        used++;
+        load = used / size;
+    }
+
+    /**
+     * Insert a new Stock into the HashMap.
+     * @param paramStock The Stock to insert.
+     */
+    @SuppressWarnings("unused")
+    public void put__(final Stock paramStock) {
+        if (load > MAX_LOAD) {
+            System.out.println("Error, insertion failed: max load limit reached, remove elements before putting new ones in!");
+            return;
+        }
+        int h1, h2;
+        int index;
+
+        h1 = hash(paramStock.name);
+        h2 = hash(paramStock.wkn);
+
+        System.out.println(h1 + " - " + h2);
+
+        int offset;
+
+        if (h1 < h2) {
+            offset = h2 - h1;
+        } else {
+            offset = h1 - h2;
+        }
+
+        System.out.println("Offset: " + offset);
+
+        // store by wkn
+        index = getNextFreeIndex(stocksByWkn, h2, paramStock);
+        stocksByWkn[index] = paramStock;
+        System.out.print(index + " : ");
+
+        index = (index+offset) % size;
+        stocksByName[index] = paramStock;
+        System.out.println(index);
 
         // internal data
         used++;
@@ -102,7 +146,7 @@ public class StockHashMap implements Serializable {
      * @param paramHash The hash of key.
      * @return The next free index.
      */
-    private int getNextFreeIndex(final Stock[] paramArray, int paramHash) {
+    private int getNextFreeIndex(final Stock[] paramArray, int paramHash, final Stock paramStock) {
         if (paramHash < 0) {
             paramHash *= -1;
         }

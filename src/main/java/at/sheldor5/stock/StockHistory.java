@@ -2,6 +2,7 @@ package at.sheldor5.stock;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,12 +29,17 @@ public class StockHistory implements Serializable {
             int i = 0;
             String line;
             while (i++ < MAX_ENTRIES && (line = br.readLine()) != null) {
-                historyEntries.add(new HistoryEntry(line));
+                try {
+                    historyEntries.add(new HistoryEntry(line));
+                } catch (final Exception e) {
+                    System.out.println(e.getMessage());
+                }
             }
+            Collections.sort(historyEntries);
         } catch (final IOException e) {
             e.printStackTrace();
-            return null;
+            historyEntries.clear();
         }
-        return historyEntries;
+        return historyEntries.size() > 0 ? historyEntries : null;
     }
 }

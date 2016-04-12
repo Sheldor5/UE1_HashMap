@@ -1,6 +1,7 @@
 package at.sheldor5.hashmap;
 
 import at.sheldor5.stock.Stock;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -81,7 +82,41 @@ public class StockHashMapTest {
             tmp[map.getNextIndex(1, i)]++;
         }
         check();
-        System.out.println("> Advanced square exploration:\t" + unused + " buckets were not hit, defined by (h+((-1)^(i+1))*((i/2)^2)%m)\n");
+        System.out.println("> Advanced square exploration:\t" + unused + " buckets were not hit, defined by (h+((-1)^(i+1))*((i/2)^2)%m)");
+    }
+
+    @Test
+    public void testExploratoryConsistency() {
+        int h1 = map.hash("TestStock"), h2 = map.hash("TS");
+        int offset;
+        if (h1 < h2) {
+            offset = h2 - h1;
+        } else {
+            offset = h1 - h2;
+        }
+        System.out.println(h1 + "-" + h2 + ":" + offset);
+        int i1, i2;
+        for (int i = 0; i < 100; i++) {
+            i1 = map.getNextIndex(h1, i);
+            i2 = map.getNextIndex(h2, i);
+            if (i1 < i2) {
+                offset = i2 - i1;
+            } else {
+                offset = i1 - i2;
+            }
+            System.out.println(i + ": " + i1 + "-" + i2 + ":" + offset);
+            // Assert.assertEquals(diff_ref);
+        }
+
+        /*Stock stock = new Stock("TestStock", "1234", "TS", null);
+
+        StockHashMap map1 = new StockHashMap(10);
+        StockHashMap map2 = new StockHashMap(10);
+
+        map1.put(stock);
+        map2.put__(stock);*/
+
+        System.out.println();
     }
 
     private void reset() {
@@ -97,5 +132,10 @@ public class StockHashMapTest {
                 unused++;
             }
         }
+    }
+
+    @AfterClass
+    public static void closeTest() {
+        System.out.println("\n");
     }
 }
