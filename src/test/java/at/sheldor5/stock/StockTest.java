@@ -1,5 +1,6 @@
 package at.sheldor5.stock;
 
+import at.sheldor5.Main;
 import org.junit.Test;
 
 import java.util.List;
@@ -15,5 +16,3 @@ public class StockTest {
         Stock.plot(xbox, 30);
     }
 }
-
-

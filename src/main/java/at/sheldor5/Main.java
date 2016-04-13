@@ -21,44 +21,46 @@ public class Main {
         try {
             System.out.print("#>");
             String command;
-            String[] params = {};
+            String[] params;
             while (running && (inputLine = br.readLine()) != null) {
-                String[] split = inputLine.split(" ");
+                String[] split = inputLine.split(" ", 2);
                 if (split.length < 1) {
                     invalid();
                 } else {
                     command = split[0];
                     if (split.length > 1) {
-                        params = split[1].split(":");
-                    }
-                    for (final String s : params) {
-                        s.trim();
+                        params = split[1].split(";");
+                        for (final String s : params) {
+                            s.trim();
+                        }
+                    } else {
+                        params = new String[0];
                     }
                     switch (command) {
                         case "ADD":
-                            if (params.length == 4) {
-                                stock = new Stock(params[1], params[2], params[3], null);
+                            if (params.length == 3) {
+                                stock = new Stock(params[0], params[1], params[2], null);
                                 map.put(stock);
-                            } else if (params.length == 5) {
-                                stock = new Stock(params[1], params[2], params[3], params[4]);
+                            } else if (params.length == 4) {
+                                stock = new Stock(params[0], params[1], params[2], params[3]);
                                 map.put(stock);
                             } else {
                                 invalid();
                             }
                             break;
                         case "DEL":
-                            if (params.length == 1) {
+                            if (params.length == 0) {
                                 map.remove(stock.wkn);
-                            } else if (params.length == 2) {
-                                map.remove(params[1]);
+                            } else if (params.length == 1) {
+                                map.remove(params[0]);
                             } else {
                                 invalid();
                             }
                             break;
                         case "IMPORT":
-                            if (params.length == 2) {
+                            if (params.length == 1) {
                                 if (stock != null) {
-                                    stock.load(params[1]);
+                                    stock.load(params[0]);
                                 } else {
                                     System.out.println("Keine Aktie ausgewählt");
                                 }
@@ -67,8 +69,8 @@ public class Main {
                             }
                             break;
                         case "SEARCH":
-                            if (params.length >= 2) {
-                                stock = map.get(params[1]);
+                            if (params.length >= 1) {
+                                stock = map.get(params[0]);
                             } else {
                                 invalid();
                             }
@@ -77,15 +79,15 @@ public class Main {
                             Stock.plot(stock, 30);
                             break;
                         case "SAVE":
-                            if (params.length == 2) {
-                                FileUtils.serialize(map, params[1]);
+                            if (params.length == 1) {
+                                FileUtils.serialize(map, params[0]);
                             } else {
                                 invalid();
                             }
                             break;
                         case "LOAD":
-                            if (params.length == 2) {
-                                map = (StockHashMap) FileUtils.deserialize(params[1]);
+                            if (params.length == 1) {
+                                map = (StockHashMap) FileUtils.deserialize(params[0]);
                             } else {
                                 invalid();
                             }
