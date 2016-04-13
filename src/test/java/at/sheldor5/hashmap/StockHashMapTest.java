@@ -1,18 +1,22 @@
 package at.sheldor5.hashmap;
 
 import at.sheldor5.stock.Stock;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Michael Palata <a href="https://github.com/Sheldor5">@github.com/Sheldor5</a> on 18.03.2016.
  */
 public class StockHashMapTest {
 
-    private static final StockHashMap map = new StockHashMap();
+    private static final int buckets = 1499;
+
+    private static final StockHashMap map = new StockHashMap(buckets);
+    private static final StockHashMap map2 = new StockHashMap(buckets);
     private static final Stock testStock = new Stock("Stock #1", "0001", "STK1", null);
+    private static final Stock[] stocks = new Stock[1200];
     private static Stock tmpStock;
     private static final int[] tmp = new int[map.getMaxSize()];
 
@@ -31,20 +35,53 @@ public class StockHashMapTest {
         System.out.println();
     }
 
+    @Before
+    public void setUp() {
+        for (int i = 0; i < 1200; i++) {
+            stocks[i] = new Stock("Stock" + i, "" + i, "S"+i, null);
+        }
+    }
+
     @Test
     public void testPerformance() {
-        System.out.println("# TESTING PERFORMANCE BY PUTTING 1000 STOCKS INTO THE HASHMAP");
+        System.out.println("# TESTING PERFORMANCE BY PUTTING 1200 STOCKS INTO THE HASHMAP BY SEARCHING IN BOTH ARRAYS FOR NEXT FREE INDEX");
         long start = System.nanoTime();
-        for (int i = 0; i < 1000; i++) {
-            map.put(new Stock("Stock" + i, "" + i, "S"+i, null));
+        for (int i = 0; i < 1200; i++) {
+            map.put(stocks[i]);
         }
         long end = System.nanoTime();
-        System.out.println("> Insertion took " + (end - start) / 1000000 + " milliseconds\n");
+        double time = (end - start) / 1000000.0;
+        System.out.format("> Insertion took %.2f milliseconds\n\n", time);
+
+        Assert.assertEquals((double) 1200 / buckets, map.getLoadFactor(), 0.0001);
+
+        /*System.out.println("# TESTING PERFORMANCE BY PUTTING 1200 STOCKS INTO THE HASHMAP BY ADDING OFFSET OF HASHES TO THE INDEX");
+        start = System.nanoTime();
+        for (int i = 0; i < 1200; i++) {
+            map2.put__(stocks[i]);
+        }
+        end = System.nanoTime();
+        time = (end - start) / 1000000.0;
+        System.out.format("> Insertion took %.2f milliseconds\n\n", time);
+
+        for (int i = 0; i < buckets; i++) {
+            if (map.stocksByWkn[i] != null && map2.stocksByWkn[i] != null && !map.stocksByWkn[i].equals(map2.stocksByWkn[i])) {
+                System.out.println(map.stocksByWkn[i].name);
+                System.out.println(map2.stocksByWkn[i].name);
+                break;
+            } else if (map.stocksByName[i] != null && map2.stocksByName[i] != null && !map.stocksByName[i].equals(map2.stocksByName[i])) {
+                System.out.println(map.stocksByName[i].name);
+                System.out.println(map2.stocksByName[i].name);
+                break;
+            }
+            //Assert.assertEquals(map.stocksByWkn[i], map2.stocksByWkn[i]);
+            //Assert.assertEquals(map.stocksByName[i], map2.stocksByName[i]);
+        }*/
     }
 
     @Test
     public void testPutGetRemove() {
-        System.out.println("# TESTING STANDARD OPERATIONS WITH " + map.getStockCount() + " STOCKS LOADED");
+        System.out.println("# TESTING STANDARD OPERATIONS WITH " + map.getStockCount() + " STOCKS LOADED\n");
 
         // PUT
         map.put(testStock);
@@ -83,40 +120,6 @@ public class StockHashMapTest {
         }
         check();
         System.out.println("> Advanced square exploration:\t" + unused + " buckets were not hit, defined by (h+((-1)^(i+1))*((i/2)^2)%m)");
-    }
-
-    @Test
-    public void testExploratoryConsistency() {
-        int h1 = map.hash("TestStock"), h2 = map.hash("TS");
-        int offset;
-        if (h1 < h2) {
-            offset = h2 - h1;
-        } else {
-            offset = h1 - h2;
-        }
-        System.out.println(h1 + "-" + h2 + ":" + offset);
-        int i1, i2;
-        for (int i = 0; i < 100; i++) {
-            i1 = map.getNextIndex(h1, i);
-            i2 = map.getNextIndex(h2, i);
-            if (i1 < i2) {
-                offset = i2 - i1;
-            } else {
-                offset = i1 - i2;
-            }
-            System.out.println(i + ": " + i1 + "-" + i2 + ":" + offset);
-            // Assert.assertEquals(diff_ref);
-        }
-
-        /*Stock stock = new Stock("TestStock", "1234", "TS", null);
-
-        StockHashMap map1 = new StockHashMap(10);
-        StockHashMap map2 = new StockHashMap(10);
-
-        map1.put(stock);
-        map2.put__(stock);*/
-
-        System.out.println();
     }
 
     private void reset() {

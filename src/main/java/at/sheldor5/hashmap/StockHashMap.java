@@ -15,8 +15,8 @@ public class StockHashMap implements Serializable {
      * Arrays to hold the Stocks.
      * One to access Stocks by name and one to access Stocks by Wkn
      */
-    private final Stock[] stocksByName;
-    private final Stock[] stocksByWkn;
+    protected final Stock[] stocksByWkn;
+    protected final Stock[] stocksByName;
 
     /**
      * Defaults
@@ -81,21 +81,19 @@ public class StockHashMap implements Serializable {
         int hash;
         int index;
 
-        // store by name
-        hash = hash(paramStock.name);
-        index = getNextFreeIndex(stocksByName, hash, paramStock);
-        stocksByName[index] = paramStock;
-        System.out.print(hash + " - ");
-
         // store by wkn
         hash = hash(paramStock.wkn);
         index = getNextFreeIndex(stocksByWkn, hash, paramStock);
         stocksByWkn[index] = paramStock;
-        System.out.println(hash);
+
+        // store by name
+        hash = hash(paramStock.name);
+        index = getNextFreeIndex(stocksByName, hash, paramStock);
+        stocksByName[index] = paramStock;
 
         // internal data
         used++;
-        load = used / size;
+        load = (double) used / size;
     }
 
     /**
@@ -111,33 +109,28 @@ public class StockHashMap implements Serializable {
         int h1, h2;
         int index;
 
-        h1 = hash(paramStock.name);
-        h2 = hash(paramStock.wkn);
+        h1 = hash(paramStock.wkn);
+        h2 = hash(paramStock.name);
 
-        System.out.println(h1 + " - " + h2);
+        int offset = h2 - h1;
 
-        int offset;
-
-        if (h1 < h2) {
-            offset = h2 - h1;
-        } else {
-            offset = h1 - h2;
-        }
-
-        System.out.println("Offset: " + offset);
-
-        // store by wkn
-        index = getNextFreeIndex(stocksByWkn, h2, paramStock);
+        // store by Wkn
+        index = getNextFreeIndex(stocksByWkn, h1, paramStock);
         stocksByWkn[index] = paramStock;
-        System.out.print(index + " : ");
 
-        index = (index+offset) % size;
+        index += offset;
+
+        if (index >= size) {
+            index -= size;
+        } else if (index < 0) {
+            index += size;
+        }
+        // store by Name
         stocksByName[index] = paramStock;
-        System.out.println(index);
 
         // internal data
         used++;
-        load = used / size;
+        load = (double) used / size;
     }
 
     /**
@@ -148,7 +141,7 @@ public class StockHashMap implements Serializable {
      */
     private int getNextFreeIndex(final Stock[] paramArray, int paramHash, final Stock paramStock) {
         if (paramHash < 0) {
-            paramHash *= -1;
+            paramHash += size;;
         }
         int i = paramHash;
         int c = 0;
@@ -218,7 +211,7 @@ public class StockHashMap implements Serializable {
                 stocksByName[iName] = DELETED_OBJECT;
                 stocksByWkn[iWkn] = DELETED_OBJECT;
                 used--;
-                load = used / size;
+                load = (double) used / size;
             } else {
                 // well, fuck?
                 System.exit(-1);
@@ -346,8 +339,8 @@ public class StockHashMap implements Serializable {
      * @return The next calculated index.
      */
     protected int getNextIndex(int h, int i) {
-        int a = (int)Math.pow(-1, i+1);
-        int b = (int)Math.pow(i/2, 2);
+        int a = (int)Math.pow(-1.0, i+1.0);
+        int b = (int)Math.pow(i/2.0, 2.0);
         h = (h + (a * b)) % size;
         if (h < 0) {
             h += size;
@@ -366,7 +359,7 @@ public class StockHashMap implements Serializable {
         }
         int hash = paramKey.hashCode() % size;
         if (hash < 0) {
-            hash *= -1;
+            hash += size;
         }
         return hash;
     }
@@ -402,5 +395,12 @@ public class StockHashMap implements Serializable {
             }
         }
         return list;
+    }
+
+    public void clear() {
+        for (int i = 0; i < size; i++) {
+            stocksByWkn[i] = null;
+            stocksByName[i] = null;
+        }
     }
 }

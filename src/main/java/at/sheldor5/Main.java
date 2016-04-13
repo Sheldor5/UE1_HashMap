@@ -22,9 +22,6 @@ public class Main {
             System.out.print("#>");
             while (running && (str = br.readLine()) != null) {
                 String[] s = str.split(" ");
-                for (String a : s) {
-                    System.out.println("\"" + a + "\"");
-                }
                 if (s.length < 1) {
                     invalid();
                 } else {
