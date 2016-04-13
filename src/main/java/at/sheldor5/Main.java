@@ -16,57 +16,76 @@ public class Main {
 
     public static void main(final String[] args) {
         final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String str = "";
+        String inputLine = "";
         boolean running = true;
         try {
             System.out.print("#>");
-            while (running && (str = br.readLine()) != null) {
-                String[] s = str.split(" ");
-                if (s.length < 1) {
+            String command;
+            String[] params = {};
+            while (running && (inputLine = br.readLine()) != null) {
+                String[] split = inputLine.split(" ");
+                if (split.length < 1) {
                     invalid();
                 } else {
-                    switch (s[0]) {
+                    command = split[0];
+                    if (split.length > 1) {
+                        params = split[1].split(":");
+                    }
+                    for (final String s : params) {
+                        s.trim();
+                    }
+                    switch (command) {
                         case "ADD":
-                            if (s.length == 4) {
-                                stock = new Stock(s[1], s[2], s[3], null);
+                            if (params.length == 4) {
+                                stock = new Stock(params[1], params[2], params[3], null);
                                 map.put(stock);
-                            } else if (s.length == 5) {
-                                stock = new Stock(s[1], s[2], s[3], s[4]);
+                            } else if (params.length == 5) {
+                                stock = new Stock(params[1], params[2], params[3], params[4]);
                                 map.put(stock);
                             } else {
                                 invalid();
                             }
                             break;
                         case "DEL":
-                            if (s.length == 2) {
-                                map.remove(s[1]);
+                            if (params.length == 1) {
+                                map.remove(stock.wkn);
+                            } else if (params.length == 2) {
+                                map.remove(params[1]);
                             } else {
                                 invalid();
                             }
                             break;
                         case "IMPORT":
-
+                            if (params.length == 2) {
+                                if (stock != null) {
+                                    stock.load(params[1]);
+                                } else {
+                                    System.out.println("Keine Aktie ausgewählt");
+                                }
+                            } else {
+                                invalid();
+                            }
                             break;
                         case "SEARCH":
-                            if (s.length >= 2) {
-                                stock = map.get(s[1]);
+                            if (params.length >= 2) {
+                                stock = map.get(params[1]);
                             } else {
                                 invalid();
                             }
                             break;
                         case "PLOT":
-                            System.out.println("Ploting Stock ...");
+                            Stock.plot(stock, 30);
                             break;
                         case "SAVE":
-                            if (s.length == 2) {
-                                FileUtils.serialize(map, s[1]);
+                            if (params.length == 2) {
+                                FileUtils.serialize(map, params[1]);
                             } else {
                                 invalid();
                             }
                             break;
                         case "LOAD":
-                            if (s.length == 2) {
-                                map = (StockHashMap) FileUtils.deserialize(s[1]);
+                            if (params.length == 2) {
+                                map = (StockHashMap) FileUtils.deserialize(params[1]);
                             } else {
                                 invalid();
                             }
@@ -76,7 +95,7 @@ public class Main {
                             break;
                         case "VERBOSE":
                             map.verbose = !map.verbose;
-                            System.out.println("Toggled verbose output to: " + map.verbose);
+                            System.out.println("Verbose output: " + map.verbose);
                             break;
                         case "HELP":
                             System.out.println(FileUtils.getHelp());
@@ -90,9 +109,6 @@ public class Main {
             }
 
             System.out.println(" Bye!");
-
-            System.out.println(running);
-            System.out.println(str);
         } catch (final Exception e) {
             e.printStackTrace();
         }

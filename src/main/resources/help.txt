@@ -1,40 +1,42 @@
-Befehle: <COMMAND> <PARAMS>
+Befehle: <COMMAND> <PARAM> [ : <PARAM> ...]
+
+Parameter werden mit ":" separiert!
 
 COMMAND:
 
     ADD      Fuegt eine Aktie hinzu
 
-        PARAMS:    <Name> <Nummer> <Kuerzel> [<Dateipfad>]
+        PARAM:    <Name> : <Nummer> : <Kuerzel> [ : <Dateipfad>]
 
 
     DEL      Loescht eine Aktie
 
-        PARAMS:    (<Name> | <Kuerzel>)
+        PARAM:    (<Name> | <Kuerzel>)
 
 
     IMPORT   Importiert Aktiendaten
 
-        PARAMS:    <Dateipfad>
+        PARAM:    <Dateipfad>
 
 
     SEARCH   Sucht eine Aktie
 
-        PARAMS:    (<Name> | <Kuerzel>)
+        PARAM:    (<Name> | <Kuerzel>)
 
 
     PLOT     Zeigt die Aktiendaten als ASCII Grafik an
 
-        PARAMS:    [<Name> | <Kuerzel>]
+        PARAM:    [<Name> | <Kuerzel>]
 
 
     SAVE     Speichert Programmdaten in eine Datei ab
 
-        PARAMS:    <Dateipfad>
+        PARAM:    <Dateipfad>
 
 
     LOAD     Laedt Programmdaten aus einer Datei
 
-        PARAMS:    <Dateipfad>
+        PARAM:    <Dateipfad>
 
 
     VERBOSE  Erweiterte Ausgabe
