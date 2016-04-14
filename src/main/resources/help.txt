@@ -2,9 +2,9 @@ Befehle; <COMMAND> <PARAM> [ ; <PARAM> ...]
 
 Parameter werden mit ";" separiert!
 
-COMMAND;
+COMMAND (case insensitive):
 
-    ADD      Fuegt eine Aktie hinzu
+    ADD      Fuegt eine Aktie hinzu und markeirt diese als ausgewählte Aktie
 
         PARAM;    <Name> ; <Nummer> ; <Kuerzel> [ ; <Dateipfad>]
 
@@ -14,17 +14,18 @@ COMMAND;
         PARAM;    (<Name> | <Kuerzel>)
 
 
-    IMPORT   Importiert Aktiendaten
+    IMPORT   Importiert Aktiendaten zur ausgewählten Aktie
 
         PARAM;    <Dateipfad>
 
 
-    SEARCH   Sucht eine Aktie
+    SEARCH   Sucht eine Aktie und markiert diese als ausgewählte Aktie, falls gefunden
 
         PARAM;    (<Name> | <Kuerzel>)
 
 
-    PLOT     Zeigt die Aktiendaten als ASCII Grafik an
+    PLOT     Zeigt die Aktiendaten der ausgewählten Aktie
+             (oder der nach dem Schlüsselwort gefundenen) als ASCII Grafik an
 
         PARAM;    [<Name> | <Kuerzel>]
 

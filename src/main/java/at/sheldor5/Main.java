@@ -11,8 +11,10 @@ import java.io.StringReader;
 public class Main {
 
     private static StockHashMap map = new StockHashMap();
+    private static final String[] empty = {};
 
     private static Stock stock;
+    private static Stock tmp;
 
     public static void main(final String[] args) {
         final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -27,17 +29,17 @@ public class Main {
                 if (split.length < 1) {
                     invalid();
                 } else {
-                    command = split[0];
+                    command = split[0].toLowerCase();
                     if (split.length > 1) {
                         params = split[1].split(";");
-                        for (final String s : params) {
-                            s.trim();
+                        for (int i = 0; i < params.length; i++) {
+                            params[i] = params[i].trim();
                         }
                     } else {
-                        params = new String[0];
+                        params = empty;
                     }
                     switch (command) {
-                        case "ADD":
+                        case "add":
                             if (params.length == 3) {
                                 stock = new Stock(params[0], params[1], params[2], null);
                                 map.put(stock);
@@ -48,16 +50,26 @@ public class Main {
                                 invalid();
                             }
                             break;
-                        case "DEL":
-                            if (params.length == 0) {
-                                map.remove(stock.wkn);
-                            } else if (params.length == 1) {
-                                map.remove(params[0]);
+                        case "del":
+                            if (stock != null && params.length == 0) {
+                                tmp = map.remove(stock.wkn);
+                                if (tmp != null) {
+                                    stock = tmp;
+                                }
+                            } else if (stock != null && params.length == 1) {
+                                tmp = map.remove(params[0]);
+                                if (tmp != null) {
+                                    stock = tmp;
+                                } else {
+                                    System.out.println("Keine Aktie gefunden!");
+                                }
+                            } else if (stock == null) {
+                                System.out.println("Keine Aktie ausgewählt!");
                             } else {
                                 invalid();
                             }
                             break;
-                        case "IMPORT":
+                        case "import":
                             if (params.length == 1) {
                                 if (stock != null) {
                                     stock.load(params[0]);
@@ -68,44 +80,56 @@ public class Main {
                                 invalid();
                             }
                             break;
-                        case "SEARCH":
+                        case "search":
                             if (params.length >= 1) {
-                                stock = map.get(params[0]);
+                                tmp = map.get(params[0]);
+                                if (tmp != null) {
+                                    stock = tmp;
+                                } else {
+                                    System.out.println("Keine Aktie gefunden!");
+                                }
                             } else {
                                 invalid();
                             }
                             break;
-                        case "PLOT":
-                            Stock.plot(stock, 30);
+                        case "plot":
+                            if (stock == null) {
+                                System.out.println("Keine Aktie ausgewählt!");
+                            } else {
+                                Stock.plot(stock, 30);
+                            }
                             break;
-                        case "SAVE":
+                        case "save":
                             if (params.length == 1) {
                                 FileUtils.serialize(map, params[0]);
                             } else {
                                 invalid();
                             }
                             break;
-                        case "LOAD":
+                        case "load":
                             if (params.length == 1) {
                                 map = (StockHashMap) FileUtils.deserialize(params[0]);
                             } else {
                                 invalid();
                             }
                             break;
-                        case "QUIT":
+                        case "quit":
                             running = false;
                             break;
-                        case "VERBOSE":
+                        case "verbose":
                             map.verbose = !map.verbose;
                             System.out.println("Verbose output: " + map.verbose);
                             break;
-                        case "HELP":
+                        case "help":
                             System.out.println(FileUtils.getHelp());
                             break;
                         default:
                             invalid();
                             break;
                     }
+                }
+                if (stock != null) {
+                    System.out.println("Ausgewaehlte Aktie: " + stock.name + " | " + stock.code + " | " + stock.wkn);
                 }
                 System.out.print("#>");
             }
